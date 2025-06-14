@@ -1,0 +1,27 @@
+{
+    "routes": [
+        {
+            "path": "/dashboard",
+            "component": "Dashboard",
+            "roles": [
+                "user",
+                "admin"
+            ]
+        },
+        {
+            "path": "/dashboard/profile",
+            "component": "Profile",
+            "roles": [
+                "user",
+                "admin"
+            ]
+        },
+        {
+            "path": "/dashboard/admin",
+            "component": "AdminDashboard",
+            "roles": [
+                "admin"
+            ]
+        }
+    ]
+}
