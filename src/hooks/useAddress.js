@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { apiClient } from '../lib/api';
 
@@ -9,9 +11,20 @@ export const useCreateAddress = () => {
     setLoading(true);
     setError(null);
     try {
+      const apiPayload = {
+        street: addressData.street,
+        zip: addressData.postalCode,
+        city: addressData.city,
+        country: addressData.country,
+      };
+
+      if (addressData.additional) {
+        apiPayload.additional = addressData.additional;
+      }
+
       const response = await apiClient('/api/addresses', {
         method: 'POST',
-        body: addressData,
+        body: apiPayload,
       });
       return response;
     } catch (err) {
@@ -100,9 +113,27 @@ export const useUpdateAddress = () => {
     setLoading(true);
     setError(null);
     try {
+      const apiPayload = {};
+      
+      if (addressData.street !== undefined) {
+        apiPayload.street = addressData.street;
+      }
+      if (addressData.postalCode !== undefined) {
+        apiPayload.zip = addressData.postalCode;
+      }
+      if (addressData.city !== undefined) {
+        apiPayload.city = addressData.city;
+      }
+      if (addressData.country !== undefined) {
+        apiPayload.country = addressData.country;
+      }
+      if (addressData.additional !== undefined) {
+        apiPayload.additional = addressData.additional;
+      }
+
       const response = await apiClient(`/api/addresses/${id}`, {
         method: 'PATCH',
-        body: addressData,
+        body: apiPayload,
       });
       return response;
     } catch (err) {
