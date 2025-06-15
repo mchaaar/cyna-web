@@ -9,20 +9,20 @@ const getAuthHeaders = () => {
 
 export const apiClient = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  
   const isPatching = options.method === 'PATCH';
-  const defaultContentType = isPatching ? 'application/merge-patch+json' : 'application/json';
   
   const config = {
     headers: {
-      'Content-Type': defaultContentType,
       ...getAuthHeaders(),
       ...options.headers,
     },
     ...options,
   };
 
-  if (options.body && typeof options.body === 'object') {
+  if (options.body) {
+    if (isPatching) {
+      config.headers['Content-Type'] = 'application/merge-patch+json';
+    }
     config.body = JSON.stringify(options.body);
   }
 

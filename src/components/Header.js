@@ -31,12 +31,12 @@ const Header = () => {
     router.push('/');
   };
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', current: false },
-    { name: 'Products', href: '/products', current: false },
-    { name: 'Orders', href: '/orders', current: false },
-    { name: 'Subscriptions', href: '/subscriptions', current: false },
-  ];
+  const displayName = user?.firstName && user?.lastName 
+    ? `${user.firstName} ${user.lastName}`
+    : user?.firstName || user?.email?.split('@')[0] || 'User';
+
+  const initials = user?.firstName?.charAt(0)?.toUpperCase() || 
+                  user?.email?.charAt(0)?.toUpperCase() || 'U';
 
   if (!isAuthenticated) {
     return (
@@ -88,42 +88,7 @@ const Header = () => {
                 Sign up
               </Link>
             </div>
-
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              >
-                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
           </div>
-
-          {isMobileMenuOpen && (
-            <div className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
-                <Link href="/products" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900">
-                  Products
-                </Link>
-                <Link href="/about" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900">
-                  About
-                </Link>
-                <Link href="/contact" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900">
-                  Contact
-                </Link>
-                <div className="pt-4 pb-3 border-t border-gray-200">
-                  <Link href="/login" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900">
-                    Sign in
-                  </Link>
-                  <Link href="/register" className="block px-3 py-2 text-base font-medium text-white bg-blue-600 rounded-md">
-                    Sign up
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </header>
     );
@@ -142,15 +107,30 @@ const Header = () => {
           </div>
 
           <nav className="hidden md:flex space-x-8">
-            {navigation.map((item) => (
-              <Link 
-                key={item.name}
-                href={item.href}
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                {item.name}
-              </Link>
-            ))}
+            <Link 
+              href="/dashboard"
+              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Dashboard
+            </Link>
+            <Link 
+              href="/products"
+              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Products
+            </Link>
+            <Link 
+              href="/orders"
+              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Orders
+            </Link>
+            <Link 
+              href="/subscriptions"
+              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Subscriptions
+            </Link>
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -161,11 +141,11 @@ const Header = () => {
               >
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-medium">
-                    {user?.firstName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
+                    {initials}
                   </span>
                 </div>
                 <span className="hidden md:block text-sm font-medium">
-                  {user?.firstName || user?.email?.split('@')[0]}
+                  {displayName}
                 </span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -230,36 +210,8 @@ const Header = () => {
                 </div>
               )}
             </div>
-
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              >
-                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
           </div>
         </div>
-
-        {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
-              {navigation.map((item) => (
-                <Link 
-                  key={item.name}
-                  href={item.href}
-                  className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </header>
   );
