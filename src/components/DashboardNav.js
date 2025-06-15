@@ -47,7 +47,6 @@ export default function DashboardNav() {
                 </div>
             </div>
 
-            {/* Mobile menu */}
             <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
                 <div className="pt-2 pb-3 space-y-1">
                     {links.map(link => (
