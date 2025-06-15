@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { apiClient } from '../lib/api';
 
@@ -22,6 +24,42 @@ export const useGetMe = () => {
   };
 
   return { data, loading, error, fetchMe };
+};
+
+export const useUpdateUser = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const updateUser = async (id, userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const updatePayload = {};
+      
+      if (userData.firstName !== undefined) {
+        updatePayload.firstName = userData.firstName;
+      }
+      if (userData.lastName !== undefined) {
+        updatePayload.lastName = userData.lastName;
+      }
+      if (userData.email !== undefined) {
+        updatePayload.email = userData.email;
+      }
+
+      const response = await apiClient(`/api/users/${id}`, {
+        method: 'PATCH',
+        body: updatePayload,
+      });
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateUser, loading, error };
 };
 
 export const useGetAllUsers = () => {
@@ -113,33 +151,6 @@ export const useCreateUser = () => {
   };
 
   return { createUser, loading, error };
-};
-
-export const useUpdateUser = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const updateUser = async (id, userData) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await apiClient(`/api/users/${id}`, {
-        method: 'PATCH',
-        body: userData,
-        headers: {
-          'Content-Type': 'application/merge-patch+json',
-        },
-      });
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { updateUser, loading, error };
 };
 
 export const useGetUsers = () => {
