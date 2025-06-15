@@ -1,249 +1,191 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link';
+import { useAuth } from '../contexts/AuthContext';
+import Header from '../components/Header';
 
-const navigation = [
-  { name: 'Product', href: '#' },
-  { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
-]
-
-const tiers = [
-  {
-    name: 'SOC',
-    id: 'tier-freelancer',
-    href: '#',
-    priceMonthly: '$19',
-    description: 'Security Operations Center.',
-    features: ['5 products', 'Up to 1,000 subscribers', 'Basic analytics', '48-hour support response time'],
-    mostPopular: false,
-  },
-  {
-    name: 'EDR',
-    id: 'tier-startup',
-    href: '#',
-    priceMonthly: '$49',
-    description: 'Endpoint Detection and Response.',
-    features: [
-      '25 products',
-      'Up to 10,000 subscribers',
-      'Advanced analytics',
-      '24-hour support response time',
-      'Marketing automations',
-    ],
-    mostPopular: true,
-  },
-  {
-    name: 'XDR',
-    id: 'tier-enterprise',
-    href: '#',
-    priceMonthly: '$99',
-    description: 'Extended Detection and Response.',
-    features: [
-      'Unlimited products',
-      'Unlimited subscribers',
-      'Advanced analytics',
-      '1-hour, dedicated support response time',
-      'Marketing automations',
-    ],
-    mostPopular: false,
-  },
-]
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+export default function HomePage() {
+  const { isAuthenticated } = useAuth();
 
   return (
-    <main className="min-h-screen">
-      <div className="bg-white">
-        <header className="absolute inset-x-0 top-0 z-50">
-          <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
-            <div className="flex lg:flex-1">
-              <a href="#" className="-m-1.5 p-1.5">
-                <span className="sr-only">Your Company</span>
-                <img
-                  alt=""
-                  src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                  className="h-8 w-auto"
-                />
-              </a>
-            </div>
-            <div className="flex lg:hidden">
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(true)}
-                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-              >
-                <span className="sr-only">Open main menu</span>
-                <Bars3Icon aria-hidden="true" className="size-6" />
-              </button>
-            </div>
-            <div className="hidden lg:flex lg:gap-x-12">
-              {navigation.map((item) => (
-                <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
-                  {item.name}
-                </a>
-              ))}
-            </div>
-            <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-              <a href="#" className="text-sm/6 font-semibold text-gray-900">
-                Log in <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </nav>
-          <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-            <div className="fixed inset-0 z-50" />
-            <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between">
-                <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">Your Company</span>
-                  <img
-                    alt=""
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                    className="h-8 w-auto"
-                  />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700"
-                >
-                  <span className="sr-only">Close menu</span>
-                  <XMarkIcon aria-hidden="true" className="size-6" />
-                </button>
-              </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-500/10">
-                  <div className="space-y-2 py-6">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <div className="relative bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+              <div className="sm:text-center lg:text-left">
+                <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                  <span className="block xl:inline">Secure your</span>{' '}
+                  <span className="block text-blue-600 xl:inline">digital world</span>
+                </h1>
+                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                  Cyna provides enterprise-grade cybersecurity solutions to protect your business from evolving threats. 
+                  From endpoint protection to threat intelligence, we've got you covered.
+                </p>
+                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                  <div className="rounded-md shadow">
+                    {isAuthenticated ? (
+                      <Link
+                        href="/dashboard"
+                        className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 transition-colors"
                       >
-                        {item.name}
-                      </a>
-                    ))}
+                        Go to Dashboard
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/register"
+                        className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 transition-colors"
+                      >
+                        Get Started
+                      </Link>
+                    )}
                   </div>
-                  <div className="py-6">
-                    <a
-                      href="#"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  <div className="mt-3 sm:mt-0 sm:ml-3">
+                    <Link
+                      href="/products"
+                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10 transition-colors"
                     >
-                      Log in
-                    </a>
+                      View Products
+                    </Link>
                   </div>
                 </div>
               </div>
-            </DialogPanel>
-          </Dialog>
-        </header>
-
-        <div className="relative isolate px-6 pt-14 lg:px-8">
-          <div
-            aria-hidden="true"
-            className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-          >
-            <div
-              style={{
-                clipPath:
-                  'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-              }}
-              className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-            />
-          </div>
-          <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:py-32">
-            <div className="text-center">
-              <h1 className="text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
-                Cyna
-              </h1>
-              <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">
-                Build amazing experiences with Next.js 15. Create powerful applications with 
-                modern tools and cutting-edge technology that scale with your business needs.
-              </p>
-            </div>
+            </main>
           </div>
         </div>
-
-        <div className="bg-white py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="mx-auto max-w-4xl text-center">
-              <h2 className="text-base/7 font-semibold text-indigo-600">Pricing</h2>
-              <p className="mt-2 text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-6xl">
-                Pricing that grows with you
-              </p>
-            </div>
-            <p className="mx-auto mt-6 max-w-2xl text-pretty text-center text-lg font-medium text-gray-600 sm:text-xl/8">
-              Choose an affordable plan that's packed with the best features for engaging your audience, creating customer
-              loyalty, and driving sales.
-            </p>
-            <div className="isolate mx-auto mt-16 grid max-w-md grid-cols-1 gap-y-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-              {tiers.map((tier, tierIdx) => (
-                <div
-                  key={tier.id}
-                  className={classNames(
-                    tier.mostPopular ? 'lg:z-10 lg:rounded-b-none' : 'lg:mt-8',
-                    tierIdx === 0 ? 'lg:rounded-r-none' : '',
-                    tierIdx === tiers.length - 1 ? 'lg:rounded-l-none' : '',
-                    'flex flex-col justify-between rounded-3xl bg-white p-8 ring-1 ring-gray-200 xl:p-10',
-                  )}
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-x-4">
-                      <h3
-                        id={tier.id}
-                        className={classNames(
-                          tier.mostPopular ? 'text-indigo-600' : 'text-gray-900',
-                          'text-lg/8 font-semibold',
-                        )}
-                      >
-                        {tier.name}
-                      </h3>
-                      {tier.mostPopular ? (
-                        <p className="rounded-full bg-indigo-600/10 px-2.5 py-1 text-xs/5 font-semibold text-indigo-600">
-                          Most popular
-                        </p>
-                      ) : null}
-                    </div>
-                    <p className="mt-4 text-sm/6 text-gray-600">{tier.description}</p>
-                    <p className="mt-6 flex items-baseline gap-x-1">
-                      <span className="text-4xl font-semibold tracking-tight text-gray-900">{tier.priceMonthly}</span>
-                      <span className="text-sm/6 font-semibold text-gray-600">/month</span>
-                    </p>
-                    <ul role="list" className="mt-8 space-y-3 text-sm/6 text-gray-600">
-                      {tier.features.map((feature) => (
-                        <li key={feature} className="flex gap-x-3">
-                          <CheckIcon aria-hidden="true" className="h-6 w-5 flex-none text-indigo-600" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <a
-                    href={tier.href}
-                    aria-describedby={tier.id}
-                    className={classNames(
-                      tier.mostPopular
-                        ? 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'
-                        : 'text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300',
-                      'mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
-                    )}
-                  >
-                    Buy plan
-                  </a>
-                </div>
-              ))}
+        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+          <div className="h-56 w-full bg-gradient-to-r from-blue-600 to-purple-600 sm:h-72 md:h-96 lg:w-full lg:h-full flex items-center justify-center">
+            <div className="text-white text-center">
+              <svg className="mx-auto h-24 w-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <h3 className="text-2xl font-bold">Shield Icon</h3>
+              <p className="text-blue-100">Your Security Partner</p>
             </div>
           </div>
         </div>
       </div>
-    </main>
-  )
+
+      <div className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="lg:text-center">
+            <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Features</h2>
+            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              Complete Cybersecurity Suite
+            </p>
+            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+              Comprehensive protection for modern businesses with advanced threat detection and response capabilities.
+            </p>
+          </div>
+
+          <div className="mt-10">
+            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
+              <div className="relative">
+                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Threat Detection</p>
+                <p className="mt-2 ml-16 text-base text-gray-500">
+                  Advanced AI-powered threat detection that identifies and neutralizes security risks in real-time.
+                </p>
+              </div>
+
+              <div className="relative">
+                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 12H9v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.586l4.707-4.707C10.923 2.663 11.85 2 13 2c1.657 0 3 1.343 3 3v2z" />
+                  </svg>
+                </div>
+                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Endpoint Protection</p>
+                <p className="mt-2 ml-16 text-base text-gray-500">
+                  Comprehensive endpoint security that protects all devices in your network from malware and intrusions.
+                </p>
+              </div>
+
+              <div className="relative">
+                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Incident Response</p>
+                <p className="mt-2 ml-16 text-base text-gray-500">
+                  Rapid incident response capabilities with automated workflows and expert support.
+                </p>
+              </div>
+
+              <div className="relative">
+                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Security Analytics</p>
+                <p className="mt-2 ml-16 text-base text-gray-500">
+                  Deep security analytics and reporting to help you understand and improve your security posture.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-blue-600">
+        <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+            <span className="block">Ready to secure your business?</span>
+          </h2>
+          <p className="mt-4 text-lg leading-6 text-blue-200">
+            Join thousands of businesses that trust Cyna for their cybersecurity needs.
+          </p>
+          <div className="mt-8 flex justify-center">
+            {!isAuthenticated ? (
+              <div className="inline-flex rounded-md shadow">
+                <Link
+                  href="/register"
+                  className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 transition-colors"
+                >
+                  Start Free Trial
+                </Link>
+              </div>
+            ) : (
+              <div className="inline-flex rounded-md shadow">
+                <Link
+                  href="/products"
+                  className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 transition-colors"
+                >
+                  Browse Products
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <footer className="bg-white">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+          <div className="flex justify-center space-x-6 md:order-2">
+            <Link href="/privacy" className="text-gray-400 hover:text-gray-500">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="text-gray-400 hover:text-gray-500">
+              Terms of Service
+            </Link>
+            <Link href="/support" className="text-gray-400 hover:text-gray-500">
+              Support
+            </Link>
+          </div>
+          <div className="mt-8 md:mt-0 md:order-1">
+            <p className="text-center text-base text-gray-400">
+              &copy; 2025 Cyna. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
 }
