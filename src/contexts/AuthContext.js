@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { useLogin, useRegister, useRefreshToken } from '../hooks/useAuth';
@@ -59,19 +59,30 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'SET_USER', payload: user });
   };
 
+  const syncUserData = async () => {
+    try {
+      const userData = await fetchMe();
+      saveUserToStorage(userData);
+      return userData;
+    } catch (error) {
+      console.error('Failed to sync user data:', error);
+      throw error;
+    }
+  };
+
   const login = async (credentials) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'CLEAR_ERROR' });
-      
+
       const response = await loginHook(credentials);
-      
+
       if (response.token) {
         saveTokenToStorage(response.token, response.refresh_token);
-        
+
         const userData = await fetchMe();
         saveUserToStorage(userData);
-        
+
         return response;
       }
     } catch (error) {
@@ -86,15 +97,15 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'CLEAR_ERROR' });
-      
+
       const response = await registerHook(userData);
-      
+
       if (response.token) {
         saveTokenToStorage(response.token, response.refresh_token);
-        
+
         const userProfile = await fetchMe();
         saveUserToStorage(userProfile);
-        
+
         return response;
       }
     } catch (error) {
@@ -119,12 +130,12 @@ export const AuthProvider = ({ children }) => {
       }
 
       const response = await refreshTokenHook({ refresh_token: refreshToken });
-      
+
       if (response.token) {
         saveTokenToStorage(response.token, response.refresh_token);
         return true;
       }
-      
+
       logout();
       return false;
     } catch (error) {
@@ -136,21 +147,21 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      
+
       const token = localStorage.getItem('authToken');
       const userData = localStorage.getItem('userData');
-      
+
       if (!token) {
         dispatch({ type: 'SET_LOADING', payload: false });
         return;
       }
-      
+
       dispatch({ type: 'SET_TOKEN', payload: token });
-      
+
       if (userData) {
         dispatch({ type: 'SET_USER', payload: JSON.parse(userData) });
       }
-      
+
       try {
         const userProfile = await fetchMe();
         saveUserToStorage(userProfile);
@@ -183,6 +194,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     refreshAuthToken,
     checkAuthStatus,
+    syncUserData,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
