@@ -1,3 +1,5 @@
+'use client';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const getAuthHeaders = () => {
@@ -8,9 +10,12 @@ const getAuthHeaders = () => {
 export const apiClient = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  const isPatching = options.method === 'PATCH';
+  const defaultContentType = isPatching ? 'application/merge-patch+json' : 'application/json';
+  
   const config = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': defaultContentType,
       ...getAuthHeaders(),
       ...options.headers,
     },
@@ -24,7 +29,8 @@ export const apiClient = async (endpoint, options = {}) => {
   const response = await fetch(url, config);
   
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
   }
   
   return response.json();
@@ -33,9 +39,12 @@ export const apiClient = async (endpoint, options = {}) => {
 export const apiClientWithoutAuth = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  const isPatching = options.method === 'PATCH';
+  const defaultContentType = isPatching ? 'application/merge-patch+json' : 'application/json';
+  
   const config = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': defaultContentType,
       ...options.headers,
     },
     ...options,
@@ -48,7 +57,8 @@ export const apiClientWithoutAuth = async (endpoint, options = {}) => {
   const response = await fetch(url, config);
   
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
   }
   
   return response.json();
