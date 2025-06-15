@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { apiClient } from '../lib/api';
 
 export const useGetMe = () => {
@@ -30,25 +30,13 @@ export const useUpdateUser = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const updateUser = async (id, userData) => {
+  const updateUser = async (userData) => {
     setLoading(true);
     setError(null);
     try {
-      const updatePayload = {};
-      
-      if (userData.firstName !== undefined) {
-        updatePayload.firstName = userData.firstName;
-      }
-      if (userData.lastName !== undefined) {
-        updatePayload.lastName = userData.lastName;
-      }
-      if (userData.email !== undefined) {
-        updatePayload.email = userData.email;
-      }
-
-      const response = await apiClient(`/api/users/${id}`, {
+      const response = await apiClient('/api/me', {
         method: 'PATCH',
-        body: updatePayload,
+        body: userData
       });
       return response;
     } catch (err) {
