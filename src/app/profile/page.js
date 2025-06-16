@@ -291,7 +291,7 @@ const ProfilePage = () => {
                                                             name="firstName"
                                                             value={formData.firstName}
                                                             onChange={handleInputChange}
-                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                         />
                                                     </div>
 
@@ -305,7 +305,7 @@ const ProfilePage = () => {
                                                             name="lastName"
                                                             value={formData.lastName}
                                                             onChange={handleInputChange}
-                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                         />
                                                     </div>
                                                 </div>
@@ -320,7 +320,7 @@ const ProfilePage = () => {
                                                         name="email"
                                                         value={formData.email}
                                                         onChange={handleInputChange}
-                                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                     />
                                                 </div>
 
@@ -370,7 +370,7 @@ const ProfilePage = () => {
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-500">Member Since</label>
                                                     <p className="mt-1 text-sm text-gray-900">
-                                                        {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}
+                                                        {user?.registrationDate ? new Date(user.registrationDate).toLocaleDateString() : 'Unknown'}
                                                     </p>
                                                 </div>
                                             </div>
@@ -469,7 +469,7 @@ const ProfilePage = () => {
                                                                             value={addressForm.street}
                                                                             onChange={handleAddressChange}
                                                                             required
-                                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                                         />
                                                                     </div>
 
@@ -480,7 +480,7 @@ const ProfilePage = () => {
                                                                             name="additional"
                                                                             value={addressForm.additional}
                                                                             onChange={handleAddressChange}
-                                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                                             placeholder="Apartment, suite, etc."
                                                                         />
                                                                     </div>
@@ -494,7 +494,7 @@ const ProfilePage = () => {
                                                                                 value={addressForm.city}
                                                                                 onChange={handleAddressChange}
                                                                                 required
-                                                                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                                             />
                                                                         </div>
                                                                         <div>
@@ -505,7 +505,7 @@ const ProfilePage = () => {
                                                                                 value={addressForm.postalCode}
                                                                                 onChange={handleAddressChange}
                                                                                 required
-                                                                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                                             />
                                                                         </div>
                                                                     </div>
@@ -518,7 +518,7 @@ const ProfilePage = () => {
                                                                             value={addressForm.country}
                                                                             onChange={handleAddressChange}
                                                                             required
-                                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                                                                             placeholder="e.g., FR, US, CA"
                                                                         />
                                                                     </div>
@@ -658,7 +658,7 @@ const ProfilePage = () => {
                                                 <div className="space-y-4">
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700">Theme</label>
-                                                        <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                                        <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900">
                                                             <option>Light</option>
                                                             <option>Dark</option>
                                                             <option>System</option>
@@ -667,7 +667,7 @@ const ProfilePage = () => {
 
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700">Language</label>
-                                                        <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                                        <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900">
                                                             <option>English</option>
                                                             <option>French</option>
                                                             <option>Spanish</option>

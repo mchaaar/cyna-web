@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useUpdateUser } from '../hooks/useUser';
 
 const UserProfile = () => {
-  const { user, checkAuthStatus } = useAuth();
+  const { user, checkAuthStatus, syncUserData } = useAuth();
   const { updateUser, loading } = useUpdateUser();
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,8 +36,8 @@ const UserProfile = () => {
     e.preventDefault();
     
     try {
-      await updateUser(user.id, formData);
-      await checkAuthStatus();
+      await updateUser(formData);
+      await syncUserData();
       setEditing(false);
     } catch (error) {
       console.error('Profile update failed:', error);
@@ -93,7 +93,7 @@ const UserProfile = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
               />
             </div>
 
@@ -107,7 +107,7 @@ const UserProfile = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
               />
             </div>
           </div>
@@ -122,7 +122,7 @@ const UserProfile = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
             />
           </div>
 

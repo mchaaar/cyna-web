@@ -34,7 +34,19 @@ export const useUpdateUser = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClient('/api/me', {
+      const userDataFromStorage = localStorage.getItem('userData');
+      if (!userDataFromStorage) {
+        throw new Error('User data not found in localStorage');
+      }
+      
+      const parsedUserData = JSON.parse(userDataFromStorage);
+      const userId = parsedUserData.id;
+      
+      if (!userId) {
+        throw new Error('User ID not found in localStorage');
+      }
+
+      const response = await apiClient(`/api/users/${userId}`, {
         method: 'PATCH',
         body: userData
       });
