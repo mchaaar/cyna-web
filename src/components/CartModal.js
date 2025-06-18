@@ -5,6 +5,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/16/solid';
 import { useCart } from '../contexts/CartContext';
+import CheckoutButton from './CheckoutButton';
 
 const CartModal = () => {
   const { 
@@ -14,16 +15,18 @@ const CartModal = () => {
     subtotal, 
     updateQuantity, 
     removeItem,
-    clearCart
+    clearCart,
+    loading,
+    error
   } = useCart();
 
-  const handleQuantityChange = (id, period, newQuantity) => {
-    updateQuantity(id, period, newQuantity);
+  const handleQuantityChange = async (id, period, newQuantity) => {
+    await updateQuantity(id, period, newQuantity);
   };
 
-  const handleRemoveItem = (id, period) => {
+  const handleRemoveItem = async (id, period) => {
     if (confirm('Are you sure you want to remove this item?')) {
-      updateQuantity(id, period, 0);
+      await removeItem(id, period);
     }
   };
 
@@ -71,6 +74,18 @@ const CartModal = () => {
                     </button>
                   </div>
 
+                  {error && (
+                    <div className="mx-4 my-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                      <p className="text-sm text-red-600">{error}</p>
+                    </div>
+                  )}
+
+                  {loading && (
+                    <div className="flex justify-center py-4">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    </div>
+                  )}
+
                   <section aria-labelledby="cart-heading">
                     <h2 id="cart-heading" className="sr-only">
                       Items in your shopping cart
@@ -100,34 +115,36 @@ const CartModal = () => {
                         {items.map((item) => (
                           <li key={`${item.id}-${item.period}`} className="flex py-8 text-sm sm:items-center">
                             <img
-                              src={item.image}
-                              alt={item.name}
+                              src={item.image || 'https://via.placeholder.com/100x100?text=No+Image'}
+                              alt={item.name || 'Product'}
                               className="h-24 w-24 flex-none rounded-lg border border-gray-200 object-cover object-center sm:h-32 sm:w-32"
                             />
                             <div className="ml-4 grid flex-auto grid-cols-1 grid-rows-1 items-start gap-x-5 gap-y-3 sm:ml-6 sm:flex sm:items-center sm:gap-0">
                               <div className="row-end-1 flex-auto sm:pr-6">
-                                <h3 className="font-medium text-gray-900">{item.name}</h3>
+                                <h3 className="font-medium text-gray-900">{item.name || 'Unknown Product'}</h3>
                                 <p className="mt-1 text-gray-500">
                                   {item.period === 'month' ? 'Monthly' : 'Yearly'} subscription
                                 </p>
                               </div>
                               <p className="row-span-2 row-end-2 font-medium text-gray-900 sm:order-1 sm:ml-6 sm:w-1/3 sm:flex-none sm:text-right">
-                                ${item.price.toFixed(2)}
+                                ${(item.price || 0).toFixed(2)}
                               </p>
                               <div className="flex items-center sm:block sm:flex-none sm:text-center">
                                 <div className="flex items-center">
                                   <button
                                     type="button"
-                                    onClick={() => handleQuantityChange(item.id, item.period, item.quantity - 1)}
-                                    className="p-1 text-gray-500 hover:text-gray-700"
+                                    onClick={() => handleQuantityChange(item.id, item.period, (item.quantity || 1) - 1)}
+                                    disabled={loading}
+                                    className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-50"
                                   >
                                     <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
                                   </button>
-                                  <span className="mx-2 text-gray-900">{item.quantity}</span>
+                                  <span className="mx-2 text-gray-900">{item.quantity || 0}</span>
                                   <button
                                     type="button"
-                                    onClick={() => handleQuantityChange(item.id, item.period, item.quantity + 1)}
-                                    className="p-1 text-gray-500 hover:text-gray-700"
+                                    onClick={() => handleQuantityChange(item.id, item.period, (item.quantity || 1) + 1)}
+                                    disabled={loading}
+                                    className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-50"
                                   >
                                     <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
                                   </button>
@@ -135,7 +152,8 @@ const CartModal = () => {
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveItem(item.id, item.period)}
-                                  className="ml-4 font-medium text-indigo-600 hover:text-indigo-500 sm:mt-2 sm:ml-0"
+                                  disabled={loading}
+                                  className="ml-4 font-medium text-indigo-600 hover:text-indigo-500 sm:mt-2 sm:ml-0 disabled:opacity-50"
                                 >
                                   <span>Remove</span>
                                 </button>
@@ -158,7 +176,7 @@ const CartModal = () => {
                           <dl className="-my-4 divide-y divide-gray-200 text-sm">
                             <div className="flex items-center justify-between py-4">
                               <dt className="text-gray-600">Subtotal</dt>
-                              <dd className="font-medium text-gray-900">${subtotal.toFixed(2)}</dd>
+                              <dd className="font-medium text-gray-900">${(subtotal || 0).toFixed(2)}</dd>
                             </div>
                             <div className="flex items-center justify-between py-4">
                               <dt className="text-gray-600">Shipping</dt>
@@ -166,11 +184,11 @@ const CartModal = () => {
                             </div>
                             <div className="flex items-center justify-between py-4">
                               <dt className="text-gray-600">Tax</dt>
-                              <dd className="font-medium text-gray-900">${tax.toFixed(2)}</dd>
+                              <dd className="font-medium text-gray-900">${(tax || 0).toFixed(2)}</dd>
                             </div>
                             <div className="flex items-center justify-between py-4">
                               <dt className="text-base font-medium text-gray-900">Order total</dt>
-                              <dd className="text-base font-medium text-gray-900">${total.toFixed(2)}</dd>
+                              <dd className="text-base font-medium text-gray-900">${(total || 0).toFixed(2)}</dd>
                             </div>
                           </dl>
                         </div>
@@ -183,7 +201,8 @@ const CartModal = () => {
                       <button
                         type="button"
                         onClick={clearCart}
-                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        disabled={loading}
+                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
                       >
                         Clear Cart
                       </button>
@@ -196,12 +215,7 @@ const CartModal = () => {
                       Continue Shopping
                     </button>
                     {items.length > 0 && (
-                      <button
-                        type="submit"
-                        className="rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
-                      >
-                        Checkout
-                      </button>
+                      <CheckoutButton onClose={() => toggleCart(false)} />
                     )}
                   </div>
                 </form>
