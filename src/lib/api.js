@@ -22,6 +22,8 @@ export const apiClient = async (endpoint, options = {}) => {
   if (options.body) {
     if (isPatching) {
       config.headers['Content-Type'] = 'application/merge-patch+json';
+    } else {
+      config.headers['Content-Type'] = 'application/json';
     }
     config.body = JSON.stringify(options.body);
   }

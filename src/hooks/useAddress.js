@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { apiClient } from '../lib/api';
 
 export const useCreateAddress = () => {
@@ -18,7 +18,7 @@ export const useCreateAddress = () => {
         country: addressData.country,
       };
 
-      if (addressData.additional) {
+      if (addressData.additional && addressData.additional.trim()) {
         apiPayload.additional = addressData.additional;
       }
 
@@ -39,7 +39,7 @@ export const useCreateAddress = () => {
 };
 
 export const useGetAddresses = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -48,10 +48,24 @@ export const useGetAddresses = () => {
     setError(null);
     try {
       const response = await apiClient('/api/addresses');
-      setData(response);
-      return response;
+      
+      let addressesArray = [];
+      if (Array.isArray(response)) {
+        addressesArray = response;
+      } else if (response && response['hydra:member']) {
+        addressesArray = response['hydra:member'];
+      } else if (response && response.data) {
+        addressesArray = response.data;
+      } else if (response && typeof response === 'object') {
+        addressesArray = [response];
+      }
+      
+      setData(addressesArray);
+      return addressesArray;
     } catch (err) {
+      console.error('Error fetching addresses:', err);
       setError(err.message);
+      setData([]);
       throw err;
     } finally {
       setLoading(false);

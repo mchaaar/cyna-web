@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="relative bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
@@ -21,7 +21,7 @@ export default function HomePage() {
                   <span className="block text-blue-600 xl:inline">digital world</span>
                 </h1>
                 <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Cyna provides enterprise-grade cybersecurity solutions to protect your business from evolving threats. 
+                  Cyna provides enterprise-grade cybersecurity solutions to protect your business from evolving threats.
                   From endpoint protection to threat intelligence, we've got you covered.
                 </p>
                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">

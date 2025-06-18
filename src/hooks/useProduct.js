@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { apiClient, apiClientWithoutAuth } from '../lib/api';
 
 export const useCreateProduct = () => {
@@ -51,7 +51,7 @@ export const useGetProducts = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -64,7 +64,7 @@ export const useGetProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { data, loading, error, fetchProducts };
 };
