@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { apiClient } from '../lib/api';
 
 export const useCreateOrder = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const createOrder = async (orderData) => {
+  const createOrder = useCallback(async (orderData) => {
     setLoading(true);
     setError(null);
     try {
@@ -20,7 +20,7 @@ export const useCreateOrder = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { createOrder, loading, error };
 };
@@ -30,7 +30,7 @@ export const useGetOrders = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchOrders = async (queryParams = {}) => {
+  const fetchOrders = useCallback(async (queryParams = {}) => {
     setLoading(true);
     setError(null);
     try {
@@ -45,7 +45,7 @@ export const useGetOrders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { data, loading, error, fetchOrders };
 };
@@ -54,7 +54,7 @@ export const useGetOrderById = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchOrder = async (id) => {
+  const fetchOrder = useCallback(async (id) => {
     setLoading(true);
     setError(null);
     try {
@@ -66,7 +66,7 @@ export const useGetOrderById = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { fetchOrder, loading, error };
 };
@@ -75,7 +75,7 @@ export const useUpdateOrder = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const updateOrder = async (orderData) => {
+  const updateOrder = useCallback(async (orderData) => {
     setLoading(true);
     setError(null);
     try {
@@ -90,7 +90,7 @@ export const useUpdateOrder = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { updateOrder, loading, error };
 };
@@ -99,7 +99,7 @@ export const useReplaceOrder = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const replaceOrder = async (id, orderData) => {
+  const replaceOrder = useCallback(async (id, orderData) => {
     setLoading(true);
     setError(null);
     try {
@@ -114,7 +114,7 @@ export const useReplaceOrder = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { replaceOrder, loading, error };
 };
@@ -123,7 +123,7 @@ export const useDeleteOrder = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const deleteOrder = async (id) => {
+  const deleteOrder = useCallback(async (id) => {
     setLoading(true);
     setError(null);
     try {
@@ -137,7 +137,7 @@ export const useDeleteOrder = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { deleteOrder, loading, error };
 };

@@ -51,11 +51,13 @@ export const useGetProducts = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = useCallback(async (queryParams = {}) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClientWithoutAuth('/api/products');
+      const queryString = new URLSearchParams(queryParams).toString();
+      const url = queryString ? `/api/products?${queryString}` : '/api/products';
+      const response = await apiClient(url);
       setData(response);
       return response;
     } catch (err) {
