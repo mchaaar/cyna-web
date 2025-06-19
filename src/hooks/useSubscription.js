@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { apiClient } from '../lib/api';
 
 export const useGetSubscriptions = () => {
@@ -29,7 +29,7 @@ export const useGetMySubscriptions = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchMySubscriptions = async () => {
+  const fetchMySubscriptions = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -42,7 +42,7 @@ export const useGetMySubscriptions = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { data, loading, error, fetchMySubscriptions };
 };
@@ -55,7 +55,7 @@ export const useCancelSubscription = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClient(`/api/me/subscriptions/${id}/cancel`, {
+      const response = await apiClient(`/api/me/subscription/${id}/cancel`, {
         method: 'POST',
       });
       return response;
