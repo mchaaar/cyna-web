@@ -59,6 +59,14 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'SET_USER', payload: user });
   };
 
+  const isAdmin = () => {
+    return state.user && (
+      (Array.isArray(state.user.roles) && state.user.roles.includes('ROLE_ADMIN')) ||
+      state.user.role === 2 ||
+      state.user.roles === 2
+    );
+  };
+
   const syncUserData = async () => {
     try {
       const userData = await fetchMe();
@@ -195,6 +203,7 @@ export const AuthProvider = ({ children }) => {
     refreshAuthToken,
     checkAuthStatus,
     syncUserData,
+    isAdmin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

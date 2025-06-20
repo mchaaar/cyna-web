@@ -1,169 +1,42 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { apiClient } from '../lib/api';
-
-export const useGetMe = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const fetchMe = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await apiClient('/api/me');
-      setData(response);
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { data, loading, error, fetchMe };
-};
-
-export const useUpdateUser = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const updateUser = async (userData) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const userDataFromStorage = localStorage.getItem('userData');
-      if (!userDataFromStorage) {
-        throw new Error('User data not found in localStorage');
-      }
-      
-      const parsedUserData = JSON.parse(userDataFromStorage);
-      const userId = parsedUserData.id;
-      
-      if (!userId) {
-        throw new Error('User ID not found in localStorage');
-      }
-
-      const response = await apiClient(`/api/users/${userId}`, {
-        method: 'PATCH',
-        body: userData
-      });
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { updateUser, loading, error };
-};
-
-export const useGetAllUsers = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const fetchAllUsers = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await apiClient('/api/me/all');
-      setData(response);
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { data, loading, error, fetchAllUsers };
-};
-
-export const useGetUserById = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const fetchUser = async (id) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await apiClient(`/api/users/${id}`);
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { fetchUser, loading, error };
-};
-
-export const useDeleteUser = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const deleteUser = async (id) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await apiClient(`/api/users/${id}`, {
-        method: 'DELETE',
-      });
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { deleteUser, loading, error };
-};
-
-export const useCreateUser = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const createUser = async (userData) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await apiClient('/api/users', {
-        method: 'POST',
-        body: userData,
-      });
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { createUser, loading, error };
-};
 
 export const useGetUsers = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClient('/api/users');
-      setData(response);
+      const response = await apiClient('/api/me/all', { method: 'GET' });
+      const usersArray =
+        response.member ||
+        response['hydra:member'] ||
+        (Array.isArray(response) ? response : []);
+      setData(usersArray);
+      return usersArray;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { data, loading, error, fetchUsers };
+};
+
+export const useGetMe = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMe = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient('/api/me', { method: 'GET' });
       return response;
     } catch (err) {
       setError(err.message);
@@ -171,7 +44,70 @@ export const useGetUsers = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  return { data, loading, error, fetchUsers };
+  return { fetchMe, loading, error };
+};
+
+export const useCreateUser = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const createUser = useCallback(async (userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient('/users', { method: 'POST', body: userData });
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { createUser, loading, error };
+};
+
+export const useUpdateUser = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const updateUser = useCallback(async (userId, userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient(`/users/${userId}`, { method: 'PATCH', body: userData });
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { updateUser, loading, error };
+};
+
+export const useDeleteUser = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const deleteUser = useCallback(async (userId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient(`/api/users/${userId}`, { method: 'DELETE' });
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { deleteUser, loading, error };
 };

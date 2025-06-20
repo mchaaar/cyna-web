@@ -4,64 +4,50 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('authToken');
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return token
+    ? { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+    : { Accept: 'application/json' };
 };
 
 export const apiClient = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
-  const isPatching = options.method === 'PATCH';
-  
+  const url = endpoint.startsWith('/api/')
+    ? `${API_BASE_URL}${endpoint}`
+    : `${API_BASE_URL}/api${endpoint}`;
   const config = {
-    headers: {
-      ...getAuthHeaders(),
-      ...options.headers,
-    },
+    headers: { ...getAuthHeaders(), ...options.headers },
     ...options,
   };
-
   if (options.body) {
-    if (isPatching) {
-      config.headers['Content-Type'] = 'application/merge-patch+json';
-    } else {
-      config.headers['Content-Type'] = 'application/json';
-    }
+    config.headers['Content-Type'] = options.method === 'PATCH'
+      ? 'application/merge-patch+json'
+      : 'application/json';
     config.body = JSON.stringify(options.body);
   }
-
-  const response = await fetch(url, config);
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-  }
-  
-  return response.json();
+  const res = await fetch(url, config);
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  if (res.status === 204) return {};
+  return res.json();
 };
 
 export const apiClientWithoutAuth = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
-  
-  const isPatching = options.method === 'PATCH';
-  const defaultContentType = isPatching ? 'application/merge-patch+json' : 'application/json';
-  
+  const url = endpoint.startsWith('/api/')
+    ? `${API_BASE_URL}${endpoint}`
+    : `${API_BASE_URL}/api${endpoint}`;
   const config = {
     headers: {
-      'Content-Type': defaultContentType,
+      'Content-Type': options.method === 'PATCH'
+        ? 'application/merge-patch+json'
+        : 'application/json',
+      Accept: 'application/json',
       ...options.headers,
     },
     ...options,
   };
-
   if (options.body && typeof options.body === 'object') {
     config.body = JSON.stringify(options.body);
   }
-
-  const response = await fetch(url, config);
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-  }
-  
-  return response.json();
+  const res = await fetch(url, config);
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  if (res.status === 204) return {};
+  return res.json();
 };
