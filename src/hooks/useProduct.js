@@ -1,8 +1,8 @@
-// src/hooks/useProduct.js
 import { useState, useCallback } from 'react';
 import { apiClient } from '../lib/api';
 
 export const useGetProducts = () => {
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError]   = useState(null);
 
@@ -11,6 +11,7 @@ export const useGetProducts = () => {
     setError(null);
     try {
       const result = await apiClient('/api/products');
+      setData(result);
       return result;
     } catch (err) {
       setError(err.message);
@@ -20,7 +21,7 @@ export const useGetProducts = () => {
     }
   }, []);
 
-  return { fetchProducts, loading, error };
+  return { data, fetchProducts, loading, error };
 };
 
 export const useCreateProduct = () => {

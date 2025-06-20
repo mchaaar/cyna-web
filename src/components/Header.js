@@ -1,274 +1,121 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../contexts/AuthContext';
-import CartIcon from './CartIcon';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import CartModal from './CartModal';
 
-const Header = () => {
-  const { user, logout, isAuthenticated, isAdmin } = useAuth();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const router = useRouter();
+export default function Header() {
+  const pathname = usePathname();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { toggleCart, totalItems } = useCart();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    const onScroll = () => setIsScrolled(window.scrollY > 0);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    setIsDropdownOpen(false);
-    router.push('/');
-  };
-
-  const displayName = user?.firstName && user?.lastName 
-    ? `${user.firstName} ${user.lastName}`
-    : user?.firstName || user?.email?.split('@')[0] || 'User';
-
-  const initials = user?.firstName?.charAt(0)?.toUpperCase() || 
-                  user?.email?.charAt(0)?.toUpperCase() || 'U';
-
-  if (!isAuthenticated) {
-    return (
-      <>
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
-                <Link href="/" className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <span className="text-2xl font-bold text-blue-600">Cyna</span>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  <Link 
-                    href="/products"
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Products
-                  </Link>
-                  <Link 
-                    href="/about"
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    About
-                  </Link>
-                  <Link 
-                    href="/contact"
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Contact
-                  </Link>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <CartIcon />
-                
-                <Link 
-                  href="/login"
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Sign in
-                </Link>
-                <Link 
-                  href="/register"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Sign up
-                </Link>
-              </div>
-            </div>
-          </div>
-        </header>
-        <CartModal />
-      </>
-    );
-  }
+  const navItems = [
+    { name: 'Home',        href: '/' },
+    { name: 'Products',    href: '/products' },
+    { name: 'Orders',       href: '/orders',        auth: true },
+    { name: 'Subscriptions', href: '/subscriptions', auth: true },
+    { name: 'Dashboard',    href: '/dashboard',     auth: true },
+    { name: 'Admin',        href: '/admin',         auth: isAdmin() },
+  ];
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/dashboard" className="flex items-center">
-                <div className="flex-shrink-0">
-                  <span className="text-2xl font-bold text-blue-600">Cyna</span>
-                </div>
-              </Link>
-            </div>
+      <header className={`fixed inset-x-0 top-0 z-40 bg-white ${isScrolled ? 'shadow-sm' : ''}`}>
+        <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex items-center">
+            <img src="/cyna.svg" alt="Cyna Logo" className="h-8 w-auto" />
+          </Link>
 
-            <nav className="hidden md:flex space-x-8">
-              <Link 
-                href="/dashboard"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Dashboard
-              </Link>
-              <Link 
-                href="/products"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Products
-              </Link>
-              <Link 
-                href="/orders"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Orders
-              </Link>
-              <Link 
-                href="/subscriptions"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Subscriptions
-              </Link>
-              {isAdmin() && (
-                <Link 
-                  href="/admin"
-                  className="text-gray-600 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors border border-red-200 hover:border-red-300"
+          <nav className="hidden md:flex space-x-6">
+            {navItems
+              .filter(item => {
+                if (item.auth === undefined) return true;
+                return item.auth && isAuthenticated;
+              })
+              .map(item => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`text-sm font-medium ${
+                    pathname === item.href ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
-                  Admin Panel
+                  {item.name}
                 </Link>
-              )}
-            </nav>
+              ))}
+          </nav>
 
-            <div className="flex items-center space-x-4">
-              <CartIcon />
-              
-              {isAdmin() && (
-                <div className="hidden md:flex">
-                  <Link 
-                    href="/admin"
-                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 px-2 py-1 rounded-md text-sm font-medium transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    <span>Admin</span>
-                  </Link>
-                </div>
-              )}
-              
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full"
+          <div className="flex items-center space-x-4">
+            {isAuthenticated ? (
+              <>
+                <div
+                  onClick={() => toggleCart(true)}
+                  className="relative flex items-center text-gray-600 hover:text-gray-900 cursor-pointer"
+                  aria-label="Shopping cart"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">
-                      {initials}
-                    </span>
-                  </div>
-                  <span className="hidden md:block text-sm font-medium">
-                    {displayName}
-                  </span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                       viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
-                </button>
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
+                      {totalItems}
+                    </span>
+                  )}
+                </div>
 
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-gray-200 z-50">
-                    <div className="py-1">
-                      <div className="px-4 py-3 text-sm border-b border-gray-100">
-                        <div className="font-medium text-gray-900">
-                          {user?.firstName} {user?.lastName}
-                        </div>
-                        <div className="text-gray-500 truncate">{user?.email}</div>
-                        {isAdmin() && (
-                          <div className="mt-1">
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                              Administrator
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      
-                      <Link 
-                        href="/profile"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        <svg className="mr-3 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        Profile Settings
-                      </Link>
-                      
-                      {isAdmin() && (
-                        <Link 
-                          href="/admin"
-                          className="flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50"
-                          onClick={() => setIsDropdownOpen(false)}
-                        >
-                          <svg className="mr-3 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                          </svg>
-                          Admin Panel
-                        </Link>
-                      )}
-                      
-                      <Link 
-                        href="/billing"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        <svg className="mr-3 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                        </svg>
-                        Billing & Plans
-                      </Link>
-                      
-                      <Link 
-                        href="/support"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        <svg className="mr-3 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Support
-                      </Link>
-                      
-                      <hr className="my-1" />
-                      
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50"
-                      >
-                        <svg className="mr-3 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
+                <div className="relative">
+                  <button
+                    onClick={() => setIsCartOpen(prev => !prev)}
+                    className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900"
+                  >
+                    {user?.firstName || user?.email.split('@')[0]}
+                    <svg className="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd"
+                            d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.08z"
+                            clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  {isCartOpen && (
+                    <div className="absolute right-0 mt-2 w-48 rounded-md bg-white py-2 shadow-lg">
+                      <Link href="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</Link>
+                      <button onClick={logout}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         Sign out
                       </button>
                     </div>
-                  </div>
-                )}
-              </div>
-            </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <Link href="/login"
+                      className="text-sm font-medium text-gray-600 hover:text-gray-900">Sign in</Link>
+                <Link href="/register"
+                      className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
-      <CartModal />
+
+      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <div className="h-16" />
     </>
   );
-};
-
-export default Header;
+}
