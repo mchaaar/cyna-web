@@ -1,19 +1,40 @@
+// src/hooks/useProduct.js
 import { useState, useCallback } from 'react';
-import { apiClient, apiClientWithoutAuth } from '../lib/api';
+import { apiClient } from '../lib/api';
+
+export const useGetProducts = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError]   = useState(null);
+
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await apiClient('/api/products');
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { fetchProducts, loading, error };
+};
 
 export const useCreateProduct = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]     = useState(null);
 
   const createProduct = async (productData) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClient('/api/products', {
+      return await apiClient('/api/products', {
         method: 'POST',
-        body: productData,
+        body: productData
       });
-      return response;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -25,16 +46,24 @@ export const useCreateProduct = () => {
   return { createProduct, loading, error };
 };
 
-export const useGetProductById = () => {
+export const useUpdateProduct = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]     = useState(null);
 
-  const fetchProduct = async (id) => {
+  const updateProduct = async (id, productData) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClientWithoutAuth(`/api/products/${id}`);
-      return response;
+      return await apiClient(`/api/products/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...productData,
+          amountMonth: productData.amountMonth,
+          amountYear: productData.amountYear,
+          discountPercentage: productData.discountPercentage
+        })
+      });
     } catch (err) {
       setError(err.message);
       throw err;
@@ -43,47 +72,21 @@ export const useGetProductById = () => {
     }
   };
 
-  return { fetchProduct, loading, error };
-};
-
-export const useGetProducts = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const fetchProducts = useCallback(async (queryParams = {}) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const queryString = new URLSearchParams(queryParams).toString();
-      const url = queryString ? `/api/products?${queryString}` : '/api/products';
-      const response = await apiClient(url);
-      setData(response);
-      return response;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  return { data, loading, error, fetchProducts };
+  return { updateProduct, loading, error };
 };
 
 export const useReplaceProduct = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]     = useState(null);
 
   const replaceProduct = async (id, productData) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClient(`/api/products/${id}`, {
+      return await apiClient(`/api/products/${id}`, {
         method: 'PUT',
-        body: productData,
+        body: productData
       });
-      return response;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -97,16 +100,15 @@ export const useReplaceProduct = () => {
 
 export const useDeleteProduct = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]     = useState(null);
 
   const deleteProduct = async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClient(`/api/products/${id}`, {
-        method: 'DELETE',
+      return await apiClient(`/api/products/${id}`, {
+        method: 'DELETE'
       });
-      return response;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -116,4 +118,25 @@ export const useDeleteProduct = () => {
   };
 
   return { deleteProduct, loading, error };
+};
+
+export const useGetProductById = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState(null);
+
+  const fetchProduct = useCallback(async (id) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient(`/api/products/${id}`);
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { fetchProduct, loading, error };
 };
