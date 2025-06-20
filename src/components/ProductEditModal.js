@@ -1,6 +1,6 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Dialog, Transition } from '@headlessui/react'
+import { Fragment, useEffect, useState } from 'react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
 export default function ProductEditModal({ isOpen, onClose, onSubmit, product }) {
   const [form, setForm] = useState({
@@ -13,7 +13,7 @@ export default function ProductEditModal({ isOpen, onClose, onSubmit, product })
     image1: '',
     image2: '',
     image3: ''
-  });
+  })
 
   useEffect(() => {
     if (product) {
@@ -27,21 +27,28 @@ export default function ProductEditModal({ isOpen, onClose, onSubmit, product })
         image1: product.image1 || '',
         image2: product.image2 || '',
         image3: product.image3 || ''
-      });
+      })
     }
-  }, [product]);
+  }, [product])
 
   function handleChange(e) {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target
     setForm(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
-    }));
+    }))
   }
 
   function submit(e) {
-    e.preventDefault();
-    onSubmit(form);
+    e.preventDefault()
+    const payload = { 
+      ...form,
+      status: 1
+    }
+    if (payload.discountPercentage !== '') {
+      payload.discountPercentage = parseInt(payload.discountPercentage, 10)
+    }
+    onSubmit(payload)
   }
 
   return (
@@ -70,13 +77,93 @@ export default function ProductEditModal({ isOpen, onClose, onSubmit, product })
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  className="mt-1 block w-full border-gray-300 rounded-md"
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                   required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                  rows="3"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Monthly Price</label>
+                <input
+                  type="number"
+                  name="amountMonth"
+                  value={form.amountMonth}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Yearly Price</label>
+                <input
+                  type="number"
+                  name="amountYear"
+                  value={form.amountYear}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Discount Percentage</label>
+                <input
+                  type="number"
+                  name="discountPercentage"
+                  value={form.discountPercentage}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="active"
+                  checked={form.active}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label className="ml-2 block text-sm text-gray-900">Active</label>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Image 1 URL</label>
+                <input
+                  type="text"
+                  name="image1"
+                  value={form.image1}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Image 2 URL</label>
+                <input
+                  type="text"
+                  name="image2"
+                  value={form.image2}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Image 3 URL</label>
+                <input
+                  type="text"
+                  name="image3"
+                  value={form.image3}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                 />
               </div>
               <button
                 type="submit"
-                className="mt-4 inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                className="mt-4 inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Update
               </button>
@@ -85,5 +172,5 @@ export default function ProductEditModal({ isOpen, onClose, onSubmit, product })
         </div>
       </Dialog>
     </Transition>
-  );
+  )
 }
